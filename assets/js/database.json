@@ -1,0 +1,14 @@
+{
+    "food": [
+        {name: "Apple"},
+        {name: "Spaghetti"},
+        {name: "Steak"},
+        {name: "Salad"},
+        {name: "icecream"},
+        {name: "cake"},
+        {name: "hamburger"},
+        {name: "hotdog"},
+        {name: "rice"},
+        {name: "carrots"}
+    ]
+}

@@ -1,0 +1,10 @@
+html {
+    font-family: 'Neue Helvetica';
+}
+#application{
+	position: relative;
+    height: 800px;
+    width: 1000px;
+    top: 50px;
+    margin: auto;
+}
