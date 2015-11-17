@@ -1,4 +1,5 @@
 import React from 'react';
+import Radium from 'radium';
 import data from './database';
 import $ from 'jquery';
 import Search from './components/Search';
@@ -6,35 +7,49 @@ import Images from './components/Images';
 import MoreImages from './components/MoreImages';
 
 let styles = {
+    hide: {
+        display: 'none'
+    },
+    dim: {
+      opacity: '.1'  
+    },
     wrapper: {
         position: "relative",
-        minHeight: "200px",
         display:'table',
         width: "900px",
         top: "20px",
         margin: "auto",
-        backgroundColor: "#F8F8F8",
-        border: "1px solid #E4E4E4"
+        border: "1px solid #edeeee"
     },
     header: {
         backgroundColor: "white",
         position: "relative",
         textAlign: "center",
     	width: "100%",
-    	height: "37px",
+    	height: "40px",
     	display: "inline-block",
     	verticalAlign: "top",
-    	borderBottom: "1px solid #E4E4E4"
+    	borderBottom: "1px solid #edeeee"
     },
         info: {
             position:'absolute',
     	    left:'10px',
-    	    top:'10px'
+    	    top:'10px',
+    	    backgroundColor: 'white',
+    	    color: '#125688',
+            border: 'none',
+            fontSize: '12px',
+            fontWeight: '600'
         },
         newGame: {
             position:'absolute',
     	    right:'10px',
-    	    top:'10px'
+    	    top:'10px',
+    	    backgroundColor: 'white',
+    	    color: '#125688',
+            border: 'none',
+            fontSize: '12px',
+            fontWeight: '600'
         },
         title: {
             display:'inline',
@@ -43,7 +58,7 @@ let styles = {
         },
     potentialPoints: {
         position: 'absolute',
-        top: '0px',
+        top: '19px',
         display: 'inline',
         fontSize: 'smaller',
         left: '30px',
@@ -51,7 +66,7 @@ let styles = {
     },
     totalPoints: {
         position: 'absolute',
-        top: '0px',
+        top: '19px',
         display: 'inline',
         fontSize: 'smaller',
         right: '30px',
@@ -59,8 +74,24 @@ let styles = {
     },
     content: {
         position:'relative',
-        margin: "20px 0px 20px 0px",
-        width:'100%'
+        padding: "20px 0px 20px 0px",
+        width:'100%',
+        backgroundColor: '#fafafa'
+    },
+    infoBox: {
+        position:'absolute',
+        top: '45px',
+        padding: "50px 16%",
+        width:'68%',
+        textAlign: 'center',
+        color:'#125688'
+    },
+    closeInfoBox: {
+        background:'none',
+        border:'none',
+        fontSize:'16px',
+        fontWeight:'600',
+        color:'#125688'
     }
 };
 
@@ -86,10 +117,12 @@ class QuizApp extends React.Component {
         
         this.state = {
             inputPlaceholder: 'Guess the #Hashtag',
-            currentQuestion: 0,
+            currentQuestion: -1,
             imagesVisible: 0,
             totalPoints: 0,
             possiblePoints: 10,
+            dimContent: false,
+            infoBoxVisible: false,
             database: [] //new object array of hashtags and images
         };
     }
@@ -98,18 +131,43 @@ class QuizApp extends React.Component {
     render() {
         return  <div style={styles.wrapper}>
                     <header style={styles.header}>
-                        <input type="button" value="info" style={styles.info}/>
+                        <input type="button" id="info" value="Info" style={styles.info} onClick={this.showInfoBox.bind(this)} />
                         <h1 style={styles.title}>#Guess</h1>
-                        <input type="button" onClick={this.newGame.bind(this)} value="New Game" style={styles.newGame}/>
+                        <input type="button" onClick={this.newGame.bind(this)} value="+New Game" style={styles.newGame}/>
                     </header>
-                    <section style={styles.content}>
+                    <section style={[styles.content, this.state.currentQuestion<0 && styles.hide, this.state.dimContent && styles.dim]}>
                         <h2 style={styles.potentialPoints}><b>Current Potential</b>: {this.state.possiblePoints}</h2>
                         <Search placeholder={this.state.inputPlaceholder} onSubmit={this._handleSubmit.bind(this)} />
                         <h2 style={styles.totalPoints}><b>Score</b>: {this.state.totalPoints}</h2>
                         <Images currentQuestion={this.state.currentQuestion} quantity={this.state.imagesVisible} db={this.state.database} />
                         <MoreImages imagesVisible={this.state.imagesVisible} onClick={this._handleMoreImages.bind(this)} />
                     </section>
+                    <section style={[styles.infoBox, !this.state.infoBoxVisible && styles.hide]}>
+                        <h2>Information</h2>
+                        <p>This quiz presents a set of Instagram images all containing the same hashtag.
+                        The object is to guess the common hashtag between all of the images.
+                        Type your guess in the form and press enter to submit your guess.</p>
+                        <input type="button" id="closeInfo" value="Close" style={styles.closeInfoBox} onClick={this.closeInfoBox.bind(this)} />
+                    </section>
                 </div>;
+    }
+    
+    // componentDidMount() {
+    //     $('info').on('click',this.showInfoBox);
+    // }
+
+    showInfoBox(){
+        this.setState({
+            dimContent: true,
+            infoBoxVisible: true
+        });
+    }
+    
+    closeInfoBox(){
+        this.setState({
+            dimContent: false,
+            infoBoxVisible: false
+        });
     }
     
     _handleSubmit(value) {
@@ -206,4 +264,4 @@ class QuizApp extends React.Component {
     };
 }
 
-export default QuizApp;
+export default Radium(QuizApp);

@@ -10,10 +10,10 @@ class Search extends React.Component {
             styles: {
                 position:'relative',
                 marginLeft: '300px',
-                height:'30px',
+                height:'24px',
                 width:'300px',
                 border:'1px solid #E4E4E4',
-                borderRadius:'15px',
+                borderRadius:'12px',
                 textAlign:'center',
                 display:'inline'
             }

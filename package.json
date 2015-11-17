@@ -11,6 +11,7 @@
     "express-babelify-middleware": "^0.1.0",
     "jade": "^1.11.0",
     "jquery": "^2.1.4",
+    "radium": "^0.15.3",
     "react": "^0.14.1",
     "react-dom": "^0.14.1",
     "socket.io": "~0.9.14"
