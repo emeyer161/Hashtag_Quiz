@@ -38,7 +38,6 @@ class Search extends React.Component {
     
     _handleKeyDown(event) {
         if (event.which === 13) {
-            console.info('Submit!!!');
             this.props.onSubmit(this.state.value);
             this.setState({
                 value: ''

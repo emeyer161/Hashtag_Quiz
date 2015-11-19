@@ -5,38 +5,23 @@ class Images extends React.Component {
     constructor(props) {
         super(props);
         console.log("Images.props=",this.props);
-        
-        this.state = {
-            currentImages: [],
-            styles: {
-                height:'156px',
-                width:'156px',
-                marginLeft:'18px',
-                marginTop:'20px',
-                border: '1px solid #E4E4E4',
-                display:'inline-block',
-                backgroundColor:'white'
-            }
+
+        this.style = {
+            height:'156px',
+            width:'156px',
+            marginLeft:'18px',
+            marginTop:'20px',
+            border: '1px solid #E4E4E4',
+            display:'inline-block',
+            backgroundColor:'white'
         };
-        console.log("Images Constructor Finished");
-    }
-    
-    componentWillReceiveProps(nextProps){
-        // Not called for the initial render
-        // Previous props can be accessed by this.props
-        // Calling setState here does not trigger an an additional re-render
-        
-        console.log("Images recieved updated DB: ",nextProps.db);
-        this.setState({
-            currentImages: this.setImages(nextProps.currentQuestion, nextProps.quantity, nextProps.db)
-        });
     }
     
     render() {
-        console.log("Images rendering, this.state=",this.state);
+        var imgArray = this.setImages(this.props.currentQuestion, this.props.quantity, this.props.db);
         return  <div>
-                    {this.state.currentImages.map(function(img){
-                        return <img src={img} style={this.state.styles}/>;
+                    {imgArray.map(function(img){
+                        return <img src={img} style={this.style}/>;
                     },this)}
                 </div>;
     };

@@ -5,6 +5,7 @@ import $ from 'jquery';
 import Search from './components/Search';
 import Images from './components/Images';
 import MoreImages from './components/MoreImages';
+import FinalScore from './components/FinalScore';
 
 let styles = {
     hide: {
@@ -95,21 +96,6 @@ let styles = {
     }
 };
 
-// QuizApp (app.js)
-//     Header
-//         info
-//         logo
-//         newGame
-//     Content
-//         Search
-//         div
-//             image
-//             image
-//             image
-//             image
-//             image
-//         button
-
 class QuizApp extends React.Component {
     
     constructor(props) {
@@ -121,12 +107,11 @@ class QuizApp extends React.Component {
             imagesVisible: 0,
             totalPoints: 0,
             possiblePoints: 10,
-            dimContent: false,
             infoBoxVisible: false,
+            finalScoreVisible: false,
             database: [] //new object array of hashtags and images
         };
     }
-    
     
     render() {
         return  <div style={styles.wrapper}>
@@ -135,53 +120,71 @@ class QuizApp extends React.Component {
                         <h1 style={styles.title}>#Guess</h1>
                         <input type="button" onClick={this.newGame.bind(this)} value="+New Game" style={styles.newGame}/>
                     </header>
-                    <section style={[styles.content, this.state.currentQuestion<0 && styles.hide, this.state.dimContent && styles.dim]}>
-                        <h2 style={styles.potentialPoints}><b>Current Potential</b>: {this.state.possiblePoints}</h2>
-                        <Search placeholder={this.state.inputPlaceholder} onSubmit={this._handleSubmit.bind(this)} />
-                        <h2 style={styles.totalPoints}><b>Score</b>: {this.state.totalPoints}</h2>
-                        <Images currentQuestion={this.state.currentQuestion} quantity={this.state.imagesVisible} db={this.state.database} />
-                        <MoreImages imagesVisible={this.state.imagesVisible} onClick={this._handleMoreImages.bind(this)} />
-                    </section>
-                    <section style={[styles.infoBox, !this.state.infoBoxVisible && styles.hide]}>
-                        <h2>Information</h2>
-                        <p>This quiz presents a set of Instagram images all containing the same hashtag.
-                        The object is to guess the common hashtag between all of the images.
-                        Type your guess in the form and press enter to submit your guess.</p>
-                        <input type="button" id="closeInfo" value="Close" style={styles.closeInfoBox} onClick={this.closeInfoBox.bind(this)} />
-                    </section>
+                    {this.state.currentQuestion>=0
+                        ?   <section style={[styles.content, this.state.infoBoxVisible && styles.dim]} id='content'>
+                                <h2 style={styles.potentialPoints}><b>Current Potential</b>: {this.state.possiblePoints}</h2>
+                                <Search placeholder={this.state.inputPlaceholder} onSubmit={this._handleSubmit.bind(this)} />
+                                <h2 style={styles.totalPoints}><b>Score</b>: {this.state.totalPoints}</h2>
+                                <Images currentQuestion={this.state.currentQuestion} quantity={this.state.imagesVisible} db={this.state.database} />
+                                <MoreImages imagesVisible={this.state.imagesVisible} onClick={this._handleMoreImages.bind(this)} />
+                            </section>
+                        :   null}
+                    {this.state.infoBoxVisible
+                        ?   <section style={styles.infoBox} id='info'>
+                                <h2>Information</h2>
+                                <p>This quiz presents a set of Instagram images all containing the same hashtag.
+                                The object is to guess the common hashtag between all of the images.
+                                Type your guess in the form and press enter to submit your guess.</p>
+                                <input type="button" id="closeInfo" value="Close" style={styles.closeInfoBox} onClick={this.closeInfoBox.bind(this)} />
+                            </section>
+                        :   null}
+                    {this.state.finalScoreVisible 
+                        ? <div style={[this.state.infoBoxVisible && styles.dim]}><FinalScore score={this.state.totalPoints} /></div>
+                        :null}
                 </div>;
     }
-    
-    // componentDidMount() {
-    //     $('info').on('click',this.showInfoBox);
-    // }
 
     showInfoBox(){
         this.setState({
-            dimContent: true,
             infoBoxVisible: true
         });
     }
     
     closeInfoBox(){
         this.setState({
-            dimContent: false,
             infoBoxVisible: false
         });
     }
     
     _handleSubmit(value) {
-        if (value.replace(/\s+/g, '').toUpperCase() === this.state.database[this.state.currentQuestion].tag.toUpperCase()){
-            this._nextQuestion();
-        } else {
-            if (this.state.possiblePoints<2){
-                this._nextQuestion();
-            } else {
-                this.setState({
-                    possiblePoints: this.state.possiblePoints-1
-                });   
-            }
+        if (value.replace(/\s+/g, '').toUpperCase() === this.state.database[this.state.currentQuestion].tag.toUpperCase()){ // If Correct
+            this._handleCorrect();
+        } else { // If Incorrect
+            this._handleIncorrect();
         }
+        setTimeout(function(){this.setState({
+            inputPlaceholder: 'Guess the #Hashtag'
+        })}.bind(this),1000*1.5);
+    }
+    
+    _handleIncorrect(){
+        this.setState({
+            inputPlaceholder: 'Sorry, that was INCORRECT.'
+        });
+        if (this.state.possiblePoints<2){
+            this._nextQuestion();
+        } else { // If Incorrect
+            this.setState({
+                possiblePoints: this.state.possiblePoints-1
+            });   
+        }
+    }
+    
+    _handleCorrect(){
+        this.setState({
+            inputPlaceholder: 'CORRECT, Nice Job!'
+        });
+        this._nextQuestion();
     }
     
     _nextQuestion(){
@@ -193,8 +196,16 @@ class QuizApp extends React.Component {
                 possiblePoints: 10
             });   
         } else {
-            this.newGame();
+            this._gameOver();
         }
+    }
+    
+    _gameOver(){
+        this.setState({
+            totalPoints: this.state.totalPoints+this.state.possiblePoints,
+            currentQuestion: -1,
+            finalScoreVisible: true
+        });
     }
     
     _handleMoreImages(){
@@ -214,6 +225,8 @@ class QuizApp extends React.Component {
         
         setTimeout(function(){
             this.setState({
+                finalScoreVisible: false,
+                infoBoxVisible: false,
                 currentQuestion: 0,
                 imagesVisible: 5,
                 totalPoints: 0,

@@ -25,10 +25,6 @@ class MoreImages extends React.Component{
                 display: 'none'  
             }
         };
-        
-        // this.state = {
-        //     hideButton: true
-        // };
     }
     
     render() {
@@ -43,22 +39,6 @@ class MoreImages extends React.Component{
      _handleClick(event) {
         this.props.onClick();
     }
-    
-    // componentWillReceiveProps(nextProps){
-    //     // Not called for the initial render
-    //     // Previous props can be accessed by this.props
-    //     // Calling setState here does not trigger an an additional re-render
-        
-    //     if (nextProps.imagesVisible < 15){
-    //         this.setState({
-    //             hideButton: false
-    //         });
-    //     } else {
-    //         this.setState({
-    //             hideButton: true
-    //         });
-    //     }
-    // }
     
 }
 
