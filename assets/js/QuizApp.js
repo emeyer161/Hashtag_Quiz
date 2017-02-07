@@ -253,7 +253,7 @@ class QuizApp extends React.Component {
     
     _queryIgForURLs(tag) {
         var imgArray = [];
-        var url = 'https://api.instagram.com/v1/tags/'+tag+'/media/recent?access_token=226066224.1fb234f.90aa19125f2c42bd9a9fbe0e24685e92';
+        var url = 'https://api.instagram.com/v1/tags/'+tag+'/media/recent?access_token=226066224.1677ed0.cfc0a2257f724802934c50dcc9a09fd7';
         $.ajax({type: 'GET', url: url, async: false, contentType: "application/json", dataType: 'jsonp'})
             .done(function(result) {
     	    console.log("Querying IG Database...");
